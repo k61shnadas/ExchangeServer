@@ -1,2 +1,0 @@
-# ExchangeServer
-For Exchnage Server
