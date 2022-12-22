@@ -1,0 +1,24 @@
+
+Get SSL Thumbprint  
+------------------
+
+Get-ExchangeCertificate | where {$_.Status -eq "Valid" -and $_.IsSelfSigned -eq $false} | Format-List FriendlyName,Subject,CertificateDomains,Thumbprint,NotBefore,NotAfter
+
+Create New request.
+-------------------
+
+$txtrequest = New-ExchangeCertificate -GenerateRequest -FriendlyName nameSSL -SubjectName "C=CountryName,S=State,L=City,O=domainname,OU=IT,CN=mail.domain.com" -DomainName mail.domain.com,
+www.mail.domain.com,domain.com,autodiscover.domain.com -KeySize 2048 -PrivateKeyExportable $True ;[System.IO.File]::WriteAllBytes('C:\filename.req', [System.Text.Encoding] ::Unicode.GetBytes($txtrequest))
+
+
+Assign Service to new certificate
+---------------------------------
+
+Enable-ExchangeCertificate -Thumbprint  A8AFB26A4FCA9825EC1B9E2B0DF3611AB38AB2DC -Services POP,IMAP,IIS,SMTP
+
+
+Export SSL certificate
+================================================
+$cert = Export-ExchangeCertificate -Thumbprint  A8AFB26A4FCD9825DC1B9E2B0DF3611AB38AB2DC -BinaryEncoded -Password (ConvertTo-SecureString -String 'P@$sw!rd1' -AsPlainText -Force); [System.IO.File]::WriteAllBytes('C:\excert.pfx', $cert.FileData)
+
+
